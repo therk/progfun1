@@ -169,6 +169,16 @@ class FunSetSuite extends FunSuite {
       assert(!exists(s3000, (x: Int) => true), "forall 3000, out of bound")
     }
   }
+  test("whether set transformed by applying `f` to each element of `s`") {
+    new TestSets {
+      val u2_4 = union(singletonSet(2), singletonSet(4))
+      val m = map(u1_2, (x: Int) => x * 2)
+
+      assert(!contains(m, 1), "not contain 1")
+      assert(contains(m, 2), "contains 2")
+      assert(contains(m, 4), "contains 4")
+    }
+  }
 
 
 }
