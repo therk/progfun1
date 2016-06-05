@@ -78,6 +78,7 @@ class FunSetSuite extends FunSuite {
     val s2 = singletonSet(2)
     val s3 = singletonSet(3)
     val u1_2 = union(s1, s2)
+    val s3000 = singletonSet(3000)
   }
 
   /**
@@ -151,11 +152,21 @@ class FunSetSuite extends FunSuite {
 
   test("whether all bounded integers within `s` satisfy `p`") {
     new TestSets {
-      val s3000 = singletonSet(3000)
-      assert(forall(s1, (x: Int) => x ==1), "forall 1")
+      assert(forall(s1, (x: Int) => x == 1), "forall 1")
+      assert(!forall(u1_2, (x: Int) => x == 1), "forall 1 & 2 valid for only 1")
       assert(forall(u1_2, (x: Int) => true), "forall 1 & 2 with always true")
       assert(!forall(u1_2, (x: Int) => false), "forall 1 & 2 with always false")
-      assert(!forall(s3000, (x: Int) => true), "forall 3000, out of bound")
+      assert(forall(s3000, (x: Int) => true), "forall 3000, out of bound")
+    }
+  }
+
+  test("whether there exists a bounded integer within `s` that satisfies `p`") {
+    new TestSets {
+      assert(exists(s1, (x: Int) => x == 1), "forall 1")
+      assert(exists(u1_2, (x: Int) => x == 1), "forall 1 & 2")
+      assert(exists(u1_2, (x: Int) => true), "forall 1 & 2 with always true")
+      assert(!exists(u1_2, (x: Int) => false), "forall 1 & 2 with always false")
+      assert(!exists(s3000, (x: Int) => true), "forall 3000, out of bound")
     }
   }
 
