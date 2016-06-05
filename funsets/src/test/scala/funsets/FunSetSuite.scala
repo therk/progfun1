@@ -77,6 +77,7 @@ class FunSetSuite extends FunSuite {
     val s1 = singletonSet(1)
     val s2 = singletonSet(2)
     val s3 = singletonSet(3)
+    val u1_2 = union(s1, s2)
   }
 
   /**
@@ -112,8 +113,7 @@ class FunSetSuite extends FunSuite {
 
   test("intersect contains the intersection of the two given sets") {
     new TestSets {
-      val u = union(s1, s2)
-      val i = intersect(s1, u)
+      val i = intersect(s1, u1_2)
       assert(contains(i, 1), "Intersection 1")
       assert(!contains(i, 2), "Intersection 2")
       assert(!contains(i, 3), "Intersection 3")
@@ -122,8 +122,7 @@ class FunSetSuite extends FunSuite {
 
   test("diff contains the difference of the two given sets") {
     new TestSets {
-      val u = union(s1, s2)
-      val d = diff(u, s1)
+      val d = diff(u1_2, s1)
       assert(!contains(d, 1), "difference 1")
       assert(contains(d, 2), "difference 2")
       assert(!contains(d, 3), "difference 3")
@@ -132,11 +131,31 @@ class FunSetSuite extends FunSuite {
 
   test("filter returns the subset of `s` for which `p` holds") {
     new TestSets {
-      val u = union(s1, s2)
-      val f = filter(u, s1)
+      val f = filter(u1_2, (x: Int) => x == 1)
       assert(contains(f, 1), "filter 1")
       assert(!contains(f, 2), "filter 2")
       assert(!contains(f, 3), "filter 3")
+
+    }
+  }
+
+  test("filter returns the subset of `s` for which `p` is always true") {
+    new TestSets {
+      val f = filter(u1_2, (x: Int) => true)
+      assert(contains(f, 1), "filter 1")
+      assert(contains(f, 2), "filter 2")
+      assert(!contains(f, 3), "filter 3")
+
+    }
+  }
+
+  test("whether all bounded integers within `s` satisfy `p`") {
+    new TestSets {
+      val s3000 = singletonSet(3000)
+      assert(forall(s1, (x: Int) => x ==1), "forall 1")
+      assert(forall(u1_2, (x: Int) => true), "forall 1 & 2 with always true")
+      assert(!forall(u1_2, (x: Int) => false), "forall 1 & 2 with always false")
+      assert(!forall(s3000, (x: Int) => true), "forall 3000, out of bound")
     }
   }
 
