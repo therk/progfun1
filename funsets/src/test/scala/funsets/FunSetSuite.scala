@@ -77,6 +77,8 @@ class FunSetSuite extends FunSuite {
     val s1 = singletonSet(1)
     val s2 = singletonSet(2)
     val s3 = singletonSet(3)
+    val u1_2 = union(s1, s2)
+    val s3000 = singletonSet(3000)
   }
 
   /**
@@ -107,6 +109,74 @@ class FunSetSuite extends FunSuite {
       assert(contains(s, 1), "Union 1")
       assert(contains(s, 2), "Union 2")
       assert(!contains(s, 3), "Union 3")
+    }
+  }
+
+  test("intersect contains the intersection of the two given sets") {
+    new TestSets {
+      val i = intersect(s1, u1_2)
+      assert(contains(i, 1), "Intersection 1")
+      assert(!contains(i, 2), "Intersection 2")
+      assert(!contains(i, 3), "Intersection 3")
+    }
+  }
+
+  test("diff contains the difference of the two given sets") {
+    new TestSets {
+      val d = diff(u1_2, s1)
+      assert(!contains(d, 1), "difference 1")
+      assert(contains(d, 2), "difference 2")
+      assert(!contains(d, 3), "difference 3")
+    }
+  }
+
+  test("filter returns the subset of `s` for which `p` holds") {
+    new TestSets {
+      val f = filter(u1_2, (x: Int) => x == 1)
+      assert(contains(f, 1), "filter 1")
+      assert(!contains(f, 2), "filter 2")
+      assert(!contains(f, 3), "filter 3")
+
+    }
+  }
+
+  test("filter returns the subset of `s` for which `p` is always true") {
+    new TestSets {
+      val f = filter(u1_2, (x: Int) => true)
+      assert(contains(f, 1), "filter 1")
+      assert(contains(f, 2), "filter 2")
+      assert(!contains(f, 3), "filter 3")
+
+    }
+  }
+
+  test("whether all bounded integers within `s` satisfy `p`") {
+    new TestSets {
+      assert(forall(s1, (x: Int) => x == 1), "forall 1")
+      assert(!forall(u1_2, (x: Int) => x == 1), "forall 1 & 2 valid for only 1")
+      assert(forall(u1_2, (x: Int) => true), "forall 1 & 2 with always true")
+      assert(!forall(u1_2, (x: Int) => false), "forall 1 & 2 with always false")
+      assert(forall(s3000, (x: Int) => true), "forall 3000, out of bound")
+    }
+  }
+
+  test("whether there exists a bounded integer within `s` that satisfies `p`") {
+    new TestSets {
+      assert(exists(s1, (x: Int) => x == 1), "forall 1")
+      assert(exists(u1_2, (x: Int) => x == 1), "forall 1 & 2")
+      assert(exists(u1_2, (x: Int) => true), "forall 1 & 2 with always true")
+      assert(!exists(u1_2, (x: Int) => false), "forall 1 & 2 with always false")
+      assert(!exists(s3000, (x: Int) => true), "forall 3000, out of bound")
+    }
+  }
+  test("whether set transformed by applying `f` to each element of `s`") {
+    new TestSets {
+      val u2_4 = union(singletonSet(2), singletonSet(4))
+      val m = map(u1_2, (x: Int) => x * 2)
+
+      assert(!contains(m, 1), "not contain 1")
+      assert(contains(m, 2), "contains 2")
+      assert(contains(m, 4), "contains 4")
     }
   }
 
