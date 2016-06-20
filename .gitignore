@@ -9,4 +9,4 @@
 # sbt specific
 .cache
 .history
-*/target/
+*/target/*
